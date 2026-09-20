@@ -15,6 +15,8 @@ const CONFIG = {
     'Te quiero muchísimo. Hoy y todos los días.',
   ],
   maxFlores: 14,
+  musica: 'tengo-ganas.mp3', // pon el archivo junto a index.html; déjalo vacío ('') para no usar música
+  volumenMusica: 0.55,
 };
 
 /* ------------------------- utilidades ------------------------- */
@@ -102,6 +104,39 @@ function chime() {
     });
   } catch (_) { /* sin audio, no pasa nada */ }
 }
+
+/* ------------------------- música de fondo ------------------------- */
+const music = CONFIG.musica ? new Audio(CONFIG.musica) : null;
+let musicFade = 0;
+if (music) {
+  music.loop = true;
+  music.preload = 'auto';
+  music.volume = 0;
+}
+
+function fadeMusic(to, ms) {
+  clearInterval(musicFade);
+  const from = music.volume, t0 = performance.now();
+  musicFade = setInterval(() => {
+    const k = clamp((performance.now() - t0) / ms, 0, 1);
+    music.volume = lerp(from, to, k);
+    if (k >= 1) clearInterval(musicFade);
+  }, 50);
+}
+
+function playMusic() {
+  if (!music || !soundOn) return;
+  music.play().then(() => fadeMusic(CONFIG.volumenMusica, 3000)).catch(() => {
+    // el navegador exige un gesto del usuario: reintenta con el primer toque
+    addEventListener('pointerdown', playMusic, { once: true });
+  });
+}
+
+document.addEventListener('visibilitychange', () => {
+  if (!music || !started || !soundOn) return;
+  if (document.hidden) music.pause();
+  else playMusic();
+});
 
 /* ------------------------- hortensia ------------------------- */
 /* Cada florecita tiene 4 sépalos redondeados, como las hortensias de verdad. */
@@ -590,6 +625,7 @@ async function start() {
   started = true;
   $('intro').classList.add('hide');
   chime();
+  playMusic();
 
   setTimeout(() => $('title').classList.add('show'), 700);
   setTimeout(runMessages, 2200);
@@ -627,6 +663,10 @@ $('open').addEventListener('click', start);
 $('bouquet').addEventListener('click', bouquet);
 $('sound').addEventListener('click', (e) => {
   soundOn = !soundOn;
+  if (music) {
+    if (soundOn) playMusic();
+    else { clearInterval(musicFade); music.pause(); }
+  }
   e.currentTarget.textContent = 'Sonido: ' + (soundOn ? 'sí' : 'no');
   e.currentTarget.setAttribute('aria-pressed', String(soundOn));
 });
