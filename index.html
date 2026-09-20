@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Hortensias amarillas</title>
+  <meta name="theme-color" content="#0d0b2a">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;1,500;1,600&family=Quicksand:wght@500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <canvas id="scene" aria-hidden="true"></canvas>
+
+  <main class="content">
+    <h1 id="title" class="title"></h1>
+    <p id="message" class="message" aria-live="polite"></p>
+  </main>
+
+  <div class="controls" id="controls">
+    <p class="hint">Toca la pantalla para plantar más hortensias</p>
+    <div class="buttons">
+      <button id="bouquet" type="button">Un ramo</button>
+      <button id="sound" type="button" aria-pressed="true">Sonido: sí</button>
+    </div>
+  </div>
+
+  <section class="intro" id="intro">
+    <div class="intro-inner">
+      <div class="orb" aria-hidden="true"></div>
+      <p class="intro-kicker">Hice algo especial para ti</p>
+      <h2 class="intro-title" id="introTitle"></h2>
+      <button id="open" type="button">Abrir 💛</button>
+    </div>
+  </section>
+
+  <script src="script.js"></script>
+</body>
+</html>
